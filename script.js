@@ -22,6 +22,7 @@ const TRACKS = {
     { title: 'Static in the Velveteen', file: 'Music samples/Shoegaze/Static in the Velveteen.wav', format: 'wav' }
   ],
   'Christian Song': [
+    { title: 'Lord of Grace', file: 'Music samples/Christian Song/Lord of Grace.wav', format: 'wav' },
     { title: 'The Living Altar', file: 'Music samples/Christian Song/The Living Altar.wav', format: 'wav' }
   ],
   'Lofi - Rap': [
@@ -31,6 +32,11 @@ const TRACKS = {
     { title: 'ASPHALT DEMON', file: 'Music samples/Phonk/ASPHALT DEMON.wav', format: 'wav' },
     { title: 'NEON GRAVEYARD', file: 'Music samples/Phonk/NEON GRAVEYARD.wav', format: 'wav' },
     { title: 'VELOCITY OVERKILL', file: 'Music samples/Phonk/VELOCITY OVERKILL.wav', format: 'wav' }
+  ],
+  Synthwave: [
+    { title: 'Chasing the Coast', file: 'Music samples/Synthwave/Chasing the Coast.mp3', format: 'mp3' },
+    { title: 'In the Glow', file: 'Music samples/Synthwave/In the Glow.mp3', format: 'mp3' },
+    { title: 'Midnight Rewind', file: 'Music samples/Synthwave/Midnight Rewind.mp3', format: 'mp3' }
   ]
 };
 
@@ -39,7 +45,8 @@ const FEATURED = [
   { title: 'Static in the Velveteen', genre: 'Shoegaze', file: 'Music samples/Shoegaze/Static in the Velveteen.wav', format: 'wav' },
   { title: 'silver threads unwind', genre: 'Shoegaze', file: 'Music samples/Shoegaze/silver threads unwind.wav', format: 'wav' },
   { title: 'Steam-on-Glass', genre: 'Lofi - Rap', file: 'Music samples/Lofi - Rap/Steam-on-Glass.wav', format: 'wav' },
-  { title: 'NEON GRAVEYARD', genre: 'Phonk', file: 'Music samples/Phonk/NEON GRAVEYARD.wav', format: 'wav' }
+  { title: 'NEON GRAVEYARD', genre: 'Phonk', file: 'Music samples/Phonk/NEON GRAVEYARD.wav', format: 'wav' },
+  { title: 'In the Glow', genre: 'Synthwave', file: 'Music samples/Synthwave/In the Glow.mp3', format: 'mp3' }
 ];
 
 /* ─── STATE ─── */
