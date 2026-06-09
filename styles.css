@@ -177,13 +177,12 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
   align-items: center;
   position: relative;
   padding-top: 70px;
-  background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #121212 100%);
+  background: url('Image%20folder/cov_photo.jpg') center / cover no-repeat fixed;
 }
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 20% 50%, rgba(255,0,0,0.06) 0%, transparent 60%),
-              radial-gradient(ellipse at 80% 20%, rgba(255,0,0,0.04) 0%, transparent 50%);
+  background: rgba(0, 0, 0, 0.55);
   pointer-events: none;
 }
 .hero-content {
@@ -253,6 +252,44 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
 
 /* ─── FEATURED ─── */
 .featured { background: var(--bg-alt); }
+
+.featured-carousel {
+  position: relative;
+}
+.featured-scroll-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(37, 37, 37, 0.9);
+  color: var(--text);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease, background 0.3s ease;
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+}
+.featured-scroll-btn:hover {
+  background: var(--surface-hover);
+  color: var(--primary);
+}
+.featured-scroll-btn.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.featured-scroll-left {
+  left: -16px;
+}
+.featured-scroll-right {
+  right: -16px;
+}
+
 .featured-tray {
   display: flex;
   gap: 24px;
@@ -433,6 +470,32 @@ button { border: none; background: none; cursor: pointer; font-family: inherit; 
   background: rgba(255,255,255,0.06);
   color: var(--text-secondary);
   text-transform: uppercase;
+}
+
+/* ─── GENRE COLLECTIONS ─── */
+.genre-collection {
+  margin-bottom: 48px;
+}
+.genre-collection:last-child {
+  margin-bottom: 0;
+}
+.genre-collection-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.genre-collection-header h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.genre-collection-header .genre-count {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 @keyframes pulse-ring {

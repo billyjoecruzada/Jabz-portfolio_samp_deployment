@@ -1,6 +1,14 @@
 /* ─── TRACK DATA ─── */
 const PLACEHOLDER = 'Image%20folder/Temp_placeholder.jpg';
 
+const ALBUM_ART = {
+  'Music samples/Shoegaze/Silver Screen.mp3': 'Image%20folder/Music-album%20photos/Silver%20Screen%20Album.jpg',
+  'Music samples/Shoegaze/silver threads unwind.wav': 'Image%20folder/Music-album%20photos/Silver%20Threads%20Unwind%20-%20album.jpg',
+  'Music samples/Shoegaze/Spin the globe.wav': 'Image%20folder/Music-album%20photos/Spin%20the%20globe%20-%20album.png',
+  'Music samples/Shoegaze/Static in the Velveteen.wav': 'Image%20folder/Music-album%20photos/Static%20in%20the%20velveteen%20-%20album.jpg',
+};
+const getAlbumArt = (t) => ALBUM_ART[t.file] || PLACEHOLDER;
+
 const TRACKS = {
   Pluggnb: [
     { title: 'Fuyu no Asa (冬の朝 - Winter Morning)', file: 'Music samples/Pluggnb/Fuyu no Asa (冬の朝 - Winter Morning).mp3', format: 'mp3' },
@@ -9,18 +17,29 @@ const TRACKS = {
   ],
   Shoegaze: [
     { title: 'Silver Screen', file: 'Music samples/Shoegaze/Silver Screen.mp3', format: 'mp3' },
-    { title: 'Static in the Velveteen', file: 'Music samples/Shoegaze/Static in the Velveteen.wav', format: 'wav' },
-    { title: 'Spin the globe', file: 'Music samples/Shoegaze/Spin the globe.wav', format: 'wav' }
+    { title: 'silver threads unwind', file: 'Music samples/Shoegaze/silver threads unwind.wav', format: 'wav' },
+    { title: 'Spin the globe', file: 'Music samples/Shoegaze/Spin the globe.wav', format: 'wav' },
+    { title: 'Static in the Velveteen', file: 'Music samples/Shoegaze/Static in the Velveteen.wav', format: 'wav' }
   ],
   'Christian Song': [
     { title: 'The Living Altar', file: 'Music samples/Christian Song/The Living Altar.wav', format: 'wav' }
+  ],
+  'Lofi - Rap': [
+    { title: 'Steam-on-Glass', file: 'Music samples/Lofi - Rap/Steam-on-Glass.wav', format: 'wav' }
+  ],
+  Phonk: [
+    { title: 'ASPHALT DEMON', file: 'Music samples/Phonk/ASPHALT DEMON.wav', format: 'wav' },
+    { title: 'NEON GRAVEYARD', file: 'Music samples/Phonk/NEON GRAVEYARD.wav', format: 'wav' },
+    { title: 'VELOCITY OVERKILL', file: 'Music samples/Phonk/VELOCITY OVERKILL.wav', format: 'wav' }
   ]
 };
 
 const FEATURED = [
-  { title: 'Eternal Mistcage', genre: 'Pluggnb', file: 'Music samples/Pluggnb/Eternal Mistcage.wav', format: 'wav' },
+  { title: 'Silver Screen', genre: 'Shoegaze', file: 'Music samples/Shoegaze/Silver Screen.mp3', format: 'mp3' },
   { title: 'Static in the Velveteen', genre: 'Shoegaze', file: 'Music samples/Shoegaze/Static in the Velveteen.wav', format: 'wav' },
-  { title: 'The Living Altar', genre: 'Christian Song', file: 'Music samples/Christian Song/The Living Altar.wav', format: 'wav' }
+  { title: 'silver threads unwind', genre: 'Shoegaze', file: 'Music samples/Shoegaze/silver threads unwind.wav', format: 'wav' },
+  { title: 'Steam-on-Glass', genre: 'Lofi - Rap', file: 'Music samples/Lofi - Rap/Steam-on-Glass.wav', format: 'wav' },
+  { title: 'NEON GRAVEYARD', genre: 'Phonk', file: 'Music samples/Phonk/NEON GRAVEYARD.wav', format: 'wav' }
 ];
 
 /* ─── STATE ─── */
@@ -33,6 +52,8 @@ const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
 const featuredTray = $('#featuredTray');
+const scrollLeft = $('#scrollLeft');
+const scrollRight = $('#scrollRight');
 const genreTabs = $('#genreTabs');
 const trackGrid = $('#trackGrid');
 const bottomPlayer = $('#bottomPlayer');
@@ -181,20 +202,21 @@ function stopWaveform() {
 window.addEventListener('resize', resizeWaveform);
 
 /* ─── LOAD & PLAY ─── */
-function loadTrack(track) {
+async function loadTrack(track) {
   if (currentTrack && currentTrack.file === track.file && !audio.paused) {
     audio.pause();
     return;
   }
 
   stopWaveform();
-  initAudioContext();
-  if (audioCtx && audioCtx.state === 'suspended') {
-    audioCtx.resume();
-  }
 
   audio.src = encodeURI(track.file);
   audio.load();
+
+  initAudioContext();
+  if (audioCtx && audioCtx.state === 'suspended') {
+    await audioCtx.resume();
+  }
 
   currentTrack = track;
   updatePlayerUI(track);
@@ -208,16 +230,15 @@ function loadTrack(track) {
   });
 }
 
-function togglePlay() {
+async function togglePlay() {
   if (!currentTrack) {
-    // Play first featured track
     if (FEATURED.length) loadTrack(FEATURED[0]);
     return;
   }
 
   if (audio.paused) {
     initAudioContext();
-    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    if (audioCtx && audioCtx.state === 'suspended') await audioCtx.resume();
     audio.play().then(() => {
       isPlaying = true;
       updatePlayButtons();
@@ -268,7 +289,7 @@ function getAllTracks() {
 /* ─── UI UPDATES ─── */
 function updatePlayerUI(track) {
   bottomPlayer.classList.add('visible');
-  playerThumb.src = PLACEHOLDER;
+  playerThumb.src = getAlbumArt(track);
   playerTrackName.textContent = track.title;
   playerGenre.textContent = track.genre || findGenreForTrack(track) || 'Featured';
 }
@@ -361,7 +382,7 @@ function updateVolumeIcon() {
 function renderFeatured() {
   featuredTray.innerHTML = FEATURED.map(t => `
     <div class="featured-card reveal" data-file="${t.file}">
-      <img src="${PLACEHOLDER}" alt="${t.title}" class="featured-card-thumb" loading="lazy" />
+      <img src="${getAlbumArt(t)}" alt="${t.title}" class="featured-card-thumb" loading="lazy" />
       <div class="featured-card-body">
         <div class="featured-card-info">
           <h4>${t.title}</h4>
@@ -383,6 +404,26 @@ function renderFeatured() {
   });
 }
 
+/* ─── FEATURED SCROLL ─── */
+
+const SCROLL_AMOUNT = 320;
+
+function updateScrollButtons() {
+  const { scrollLeft: sLeft, scrollWidth, clientWidth } = featuredTray;
+  scrollLeft.classList.toggle('is-hidden', sLeft <= 4);
+  scrollRight.classList.toggle('is-hidden', sLeft + clientWidth >= scrollWidth - 4);
+}
+
+featuredTray.addEventListener('scroll', updateScrollButtons);
+
+scrollLeft.addEventListener('click', () => {
+  featuredTray.scrollBy({ left: -SCROLL_AMOUNT, behavior: 'smooth' });
+});
+
+scrollRight.addEventListener('click', () => {
+  featuredTray.scrollBy({ left: SCROLL_AMOUNT, behavior: 'smooth' });
+});
+
 /* ─── RENDER TRACKS ─── */
 function renderGenreTabs() {
   const genres = ['All', ...Object.keys(TRACKS)];
@@ -401,13 +442,42 @@ function renderGenreTabs() {
 }
 
 function renderTrackGrid() {
-  const tracks = currentGenre === 'All' ? getAllTracks() : TRACKS[currentGenre] || [];
-  trackGrid.innerHTML = tracks.map(t => {
-    const genre = findGenreForTrack(t);
-    return `
+  if (currentGenre === 'All') {
+    trackGrid.innerHTML = Object.entries(TRACKS).map(([genre, tracks]) => `
+      <div class="genre-collection">
+        <div class="genre-collection-header">
+          <h3>${genre}</h3>
+          <span class="genre-count">${tracks.length} track${tracks.length !== 1 ? 's' : ''}</span>
+        </div>
+        <div class="track-grid" style="gap: 16px;">
+          ${tracks.map(t => `
+            <div class="track-card reveal">
+              <div class="track-card-thumb-wrap">
+                <img src="${getAlbumArt(t)}" alt="${t.title}" class="track-card-thumb" loading="lazy" />
+                <div class="track-card-overlay">
+                  <button class="track-card-play-btn" data-track-file="${t.file}" aria-label="Play ${t.title}">
+                    <i class="fas fa-play"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="track-card-body">
+                <h4 title="${t.title}">${t.title}</h4>
+                <div class="track-card-meta">
+                  <span class="track-card-genre">${genre}</span>
+                  <span class="track-card-format">${t.format}</span>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+  } else {
+    const tracks = TRACKS[currentGenre] || [];
+    trackGrid.innerHTML = tracks.map(t => `
       <div class="track-card reveal">
         <div class="track-card-thumb-wrap">
-          <img src="${PLACEHOLDER}" alt="${t.title}" class="track-card-thumb" loading="lazy" />
+          <img src="${getAlbumArt(t)}" alt="${t.title}" class="track-card-thumb" loading="lazy" />
           <div class="track-card-overlay">
             <button class="track-card-play-btn" data-track-file="${t.file}" aria-label="Play ${t.title}">
               <i class="fas fa-play"></i>
@@ -417,13 +487,13 @@ function renderTrackGrid() {
         <div class="track-card-body">
           <h4 title="${t.title}">${t.title}</h4>
           <div class="track-card-meta">
-            <span class="track-card-genre">${genre}</span>
+            <span class="track-card-genre">${currentGenre}</span>
             <span class="track-card-format">${t.format}</span>
           </div>
         </div>
       </div>
-    `;
-  }).join('');
+    `).join('');
+  }
 
   trackGrid.querySelectorAll('.track-card-play-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -523,6 +593,9 @@ function init() {
 
   // Sync volume UI with initial 0.7
   volumeFill.style.width = '70%';
+
+  // Featured scroll button state
+  updateScrollButtons();
 }
 
 document.addEventListener('DOMContentLoaded', init);
